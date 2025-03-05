@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18  # You can specify the Node.js version (use an appropriate version)
+    commands:
+      - echo Installing dependencies...
+      - npm install  # Install dependencies listed in package.json
+  build:
+    commands:
+      - echo Building the React app...
+      - npm run build  # This builds the app and outputs to the 'build' folder
+  post_build:
+    commands:
+      - echo Deploying to S3...
+      - aws s3 sync build/ s3://my-react-appbucket-test/ --delete  # Sync the build directory with the S3 bucket
+
+artifacts:
+  files:
+    - '**/*'  # Include all files in the build folder
+  discard-paths: yes  # Optional, to keep the file structure flat in S3
+  base-directory: build
